@@ -1,0 +1,67 @@
+plugins {
+    id 'java-gradle-plugin'
+    id 'com.gradle.plugin-publish' version '0.10.1'
+    id 'groovy'
+    id 'eclipse'
+    id 'maven-publish'
+}
+
+version = '0.1.0'
+group = 'in.co.rahogata'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.spockframework:spock-core:1.3-groovy-2.5',
+                        gradleTestKit()
+}
+
+gradlePlugin {
+    plugins {
+        swayamjar {
+            id = 'in.co.rahogata.swayamjar'
+            implementationClass = 'in.co.rahogata.swayamjar.SwayamjarPlugin'
+        }
+    }
+}
+
+pluginBundle {
+    website = 'https://github.com/rahogata/swayamjar'
+    vcsUrl = 'https://github.com/rahogata/swayamjar'
+    description = 'A Gradle plugin to create an executable shell/batch script and embedding fat jar in it.'
+    tags = ['executable jar', 'shell', 'batch']
+}
+
+sourceSets {
+    functionalTest {
+    }
+}
+
+gradlePlugin.testSourceSets(sourceSets.functionalTest)
+configurations.functionalTestImplementation.extendsFrom(configurations.testImplementation)
+
+task functionalTest(type: Test) {
+    testClassesDirs = sourceSets.functionalTest.output.classesDirs
+    classpath = sourceSets.functionalTest.runtimeClasspath
+}
+
+check {
+    dependsOn(tasks.functionalTest)
+}
+
+javadoc {
+	enabled = false
+}
+
+task a {
+doLast {
+	File file = new File("out.txt")
+	file.write("first\n")
+	file.append("second\n")
+	file.append("third\n")
+	 
+	println file.text
+}
+}
