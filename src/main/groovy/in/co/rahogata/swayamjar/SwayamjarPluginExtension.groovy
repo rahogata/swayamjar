@@ -9,7 +9,7 @@ package in.co.rahogata.swayamjar
  */
 class SwayamjarPluginExtension {
 	File source;
-	String flagEnv = "SWAYAMJAR_JVM_FLAGS";
-	File destination;
+	String jvmFlagEnv = "SWAYAMJAR_JVM_FLAGS";
+	File destinationDir;
 	Set<String> osPlatforms;
 }

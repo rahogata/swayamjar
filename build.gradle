@@ -42,7 +42,12 @@ sourceSets {
 gradlePlugin.testSourceSets(sourceSets.functionalTest)
 configurations.functionalTestImplementation.extendsFrom(configurations.testImplementation)
 
-task functionalTest(type: Test) {
+task copyTestResources(type: Copy) {
+	from "src/test/resources/Main.jar"
+	into "build/functionalTest"
+}
+
+task functionalTest(type: Test, dependsOn: copyTestResources) {
     testClassesDirs = sourceSets.functionalTest.output.classesDirs
     classpath = sourceSets.functionalTest.runtimeClasspath
 }
@@ -55,13 +60,3 @@ javadoc {
 	enabled = false
 }
 
-task a {
-doLast {
-	File file = new File("out.txt")
-	file.write("first\n")
-	file.append("second\n")
-	file.append("third\n")
-	 
-	println file.text
-}
-}

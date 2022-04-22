@@ -27,16 +27,16 @@ public class SwayamjarPlugin implements Plugin<Project> {
 				if(!extension.source?.exists()) {
 					throw new IllegalArgumentException("Source file is null or does not exists.");
 				}
-				def destName = extension.destination?.name.take(extension.destination?.name.lastIndexOf('.')) ?: extension.source.name.take(extension.source.name.lastIndexOf('.'));
-				def destinationDir = extension.destination?.parent ?: extension.source.parent;
+				def destName = extension.source.name.take(extension.source.name.lastIndexOf('.'));
+				def destinationDir = extension.destinationDir ?: extension.source.parent;
 				def osPlatforms = extension.osPlatforms ? extension.osPlatforms.collect { e -> e.toLowerCase()} : [
 					System.properties['os.name'].toLowerCase().contains(WINDOWS) ? WINDOWS : NIX
 				];
 				def destination;
 				if(NIX in osPlatforms) {
-					destination = new File(destinationDir, destName);
+					destination = new File(destinationDir, destName + ".sh");
 					destination.write "#!/usr/bin/env sh\n\n", US_ASCII.name();
-					destination.append 'exec java ${' + extension.flagEnv + '} -jar "$0" "$@" \n\n', US_ASCII.name();
+					destination.append 'exec java ${' + extension.jvmFlagEnv + '} -jar "$0" "$@" \n\n', US_ASCII.name();
 					extension.source.withInputStream { s ->
 							destination.append s
 					}
@@ -44,7 +44,7 @@ public class SwayamjarPlugin implements Plugin<Project> {
 				if (WINDOWS in osPlatforms) {
 					destination = new File(destinationDir, destName + ".bat");
 					destination.write "@echo off\r\n\r\n", US_ASCII.name();
-					destination.append "java %${extension.flagEnv}% -jar %0 %*\r\n", US_ASCII.name();
+					destination.append "java %${extension.jvmFlagEnv}% -jar %0 %*\r\n", US_ASCII.name();
 					destination.append "exit /b %ERRORLEVEL%\r\n\r\n", US_ASCII.name();
 					extension.source.withInputStream { s ->
 						destination.append s

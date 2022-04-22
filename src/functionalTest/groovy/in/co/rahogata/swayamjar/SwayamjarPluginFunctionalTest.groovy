@@ -13,8 +13,7 @@ public class SwayamjarPluginFunctionalTest extends Specification {
     def "can run task"() {
         given:
         def projectDir = new File("build/functionalTest")
-		def sourceFile = new File("src/test/resources/Main.jar").absolutePath.replace("\\", "\\\\")
-		def destFile = new File("build/libs/Main.jar").absolutePath.replace("\\", "\\\\")
+		def destFile = new File(projectDir, "Main.jar")
         projectDir.mkdirs()
         new File(projectDir, "settings.gradle").text = ""
         new File(projectDir, "build.gradle").text = """
@@ -23,9 +22,10 @@ public class SwayamjarPluginFunctionalTest extends Specification {
             }
 			
 			swayamJar {
-				source = file('${sourceFile}')
-				destination = file('${destFile}')
+				source = file('Main.jar')
+				destinationDir = file('.')
 				osPlatforms = ['nix', 'WINDOWS']
+				jvmFlagEnv = "SWAYAYMJAR_TEST_JVM_FLAGS"
 			}
         """
 
@@ -38,6 +38,9 @@ public class SwayamjarPluginFunctionalTest extends Specification {
         def result = runner.build()
 
         then:
-        result.output.contains("BUILD SUCCESSFUL") && new File(destFile.take(destFile.lastIndexOf('.')) + ".bat").exists() && new File(destFile.take(destFile.lastIndexOf('.'))).exists() 
+        result.output.contains("BUILD SUCCESSFUL") &&
+		new File(destFile.absolutePath.take(destFile.absolutePath.lastIndexOf('.')) + ".bat").exists() &&
+		new File(destFile.absolutePath.take(destFile.absolutePath.lastIndexOf('.')) + ".sh").exists() &&
+		new File(destFile.absolutePath.take(destFile.absolutePath.lastIndexOf('.')) + ".sh").text.contains("SWAYAYMJAR_TEST_JVM_FLAGS");
     }
 }
