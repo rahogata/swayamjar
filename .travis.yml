@@ -18,7 +18,7 @@ jobs:
   include:
   - stage: build
     if: branch IS present AND tag IS blank
-    script: ./gradlew build
+    script: ./gradlew --no-daemon build
   - stage: publish
     if: tag IS present
-    script: ./gradlew -Pgradle.publish.key=$G_P_K -Pgradle.publish.secret=$G_P_S publishPlugins
+    script: ./gradlew --no-daemon -Pgradle.publish.key=$G_P_K -Pgradle.publish.secret=$G_P_S publishPlugins
