@@ -32,6 +32,12 @@ pluginBundle {
     vcsUrl = 'https://github.com/rahogata/swayamjar'
     description = 'A Gradle plugin to create an executable shell/batch script and embedding JAR in it.'
     tags = ['executable jar', 'shell', 'batch']
+	
+	plugins {
+		swayamjar {
+			displayName = 'SwayamJar Plugin'
+		}
+	}
 }
 
 sourceSets {
