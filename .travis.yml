@@ -10,4 +10,15 @@ cache:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
 
-script: ./gradlew build
+stages:
+- build
+- publish
+
+jobs:
+  include:
+  - stage: build
+    if: branch IS present
+    script: ./gradlew build
+  - stage: publish
+    if: tag IS present
+    script: ./gradlew publish
