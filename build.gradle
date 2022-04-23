@@ -30,7 +30,7 @@ gradlePlugin {
 pluginBundle {
     website = 'https://github.com/rahogata/swayamjar'
     vcsUrl = 'https://github.com/rahogata/swayamjar'
-    description = 'A Gradle plugin to create an executable shell/batch script and embedding fat jar in it.'
+    description = 'A Gradle plugin to create an executable shell/batch script and embedding JAR in it.'
     tags = ['executable jar', 'shell', 'batch']
 }
 
