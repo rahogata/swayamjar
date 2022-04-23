@@ -21,4 +21,4 @@ jobs:
     script: ./gradlew build
   - stage: publish
     if: tag IS present
-    script: ./gradlew publish
+    script: ./gradlew publishPlugins
