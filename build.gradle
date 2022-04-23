@@ -6,7 +6,7 @@ plugins {
     id 'maven-publish'
 }
 
-version = '0.1.0'
+version = artifactVersion
 group = 'in.co.rahogata'
 
 repositories {
@@ -43,8 +43,8 @@ gradlePlugin.testSourceSets(sourceSets.functionalTest)
 configurations.functionalTestImplementation.extendsFrom(configurations.testImplementation)
 
 task copyTestResources(type: Copy) {
-	from "src/test/resources/Main.jar"
-	into "build/functionalTest"
+	from 'src/test/resources/Main.jar'
+	into 'build/functionalTest'
 }
 
 task functionalTest(type: Test, dependsOn: copyTestResources) {

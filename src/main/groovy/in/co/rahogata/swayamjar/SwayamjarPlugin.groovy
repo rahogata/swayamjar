@@ -3,53 +3,73 @@
  */
 package in.co.rahogata.swayamjar
 
-import org.gradle.api.Project
-
 import static java.nio.charset.StandardCharsets.US_ASCII
 
-import java.nio.charset.StandardCharsets
-
+import org.gradle.api.GradleException
 import org.gradle.api.Plugin
+import org.gradle.api.Project
+import org.gradle.api.Task
+import org.gradle.api.logging.Logger
+import org.gradle.api.logging.Logging
 
 /**
  * A plugin to create an executable JAR which can be run without <code>java -jar</code>.
  */
 public class SwayamjarPlugin implements Plugin<Project> {
 
-	private static final String WINDOWS = "windows";
-	private static final String NIX = "nix";
+	private static final Logger log = Logging.getLogger(SwayamjarPlugin.class)
+	
+	static final String TASK_EXT_NAME = 'swayamJar'
+	static final String SOURCE_NOT_FOUND = 'Source file does not exists.'
+	private static final String WINDOWS = 'windows'
+	private static final String NIX = 'nix'
 	
 	void apply(Project project) {
-		def extension = project.extensions.create("swayamJar", SwayamjarPluginExtension);
-		project.task("swayamJar") {
+		log.trace('Applying plugin {}', TASK_EXT_NAME)
+		def extension = project.extensions.create(TASK_EXT_NAME, SwayamjarPluginExtension)
+		Task t = project.task(TASK_EXT_NAME) {
+			description = 'Generates a shell/batch script to run JAR as a executable binary'
 			doLast {
-				// input validations
-				if(!extension.source?.exists()) {
-					throw new IllegalArgumentException("Source file is null or does not exists.");
+				log.trace('Generating executable files with extension details: {}', extension)
+				if(!extension.source?.isFile()) {
+					throw new GradleException(SOURCE_NOT_FOUND)
 				}
-				def destName = extension.source.name.take(extension.source.name.lastIndexOf('.'));
-				def destinationDir = extension.destinationDir ?: extension.source.parent;
+				def destName = extension.source.name.take(extension.source.name.lastIndexOf('.'))
+				def destinationDir = extension.destinationDir ?: extension.source.parent
 				def osPlatforms = extension.osPlatforms ? extension.osPlatforms.collect { e -> e.toLowerCase()} : [
 					System.properties['os.name'].toLowerCase().contains(WINDOWS) ? WINDOWS : NIX
 				];
-				def destination;
+				def destination
 				if(NIX in osPlatforms) {
-					destination = new File(destinationDir, destName + ".sh");
-					destination.write "#!/usr/bin/env sh\n\n", US_ASCII.name();
-					destination.append 'exec java ${' + extension.jvmFlagEnv + '} -jar "$0" "$@" \n\n', US_ASCII.name();
+					destination = new File(destinationDir, destName + '.sh')
+					destination.write '#!/usr/bin/env sh\n\n', US_ASCII.name()
+					destination.append 'exec java ${' + extension.jvmFlagEnv + '} -jar "$0" "$@" \n\n', US_ASCII.name()
 					extension.source.withInputStream { s ->
 							destination.append s
 					}
+					destination.executable = true
+					log.info('Generated shell script at location: {}', destination)
 				}
 				if (WINDOWS in osPlatforms) {
-					destination = new File(destinationDir, destName + ".bat");
-					destination.write "@echo off\r\n\r\n", US_ASCII.name();
-					destination.append "java %${extension.jvmFlagEnv}% -jar %0 %*\r\n", US_ASCII.name();
-					destination.append "exit /b %ERRORLEVEL%\r\n\r\n", US_ASCII.name();
+					destination = new File(destinationDir, destName + '.bat')
+					destination.write '@echo off\r\n\r\n', US_ASCII.name()
+					destination.append "java %${extension.jvmFlagEnv}% -jar %0 %*\r\n", US_ASCII.name()
+					destination.append 'exit /b %ERRORLEVEL%\r\n\r\n', US_ASCII.name()
 					extension.source.withInputStream { s ->
 						destination.append s
 					}
+					destination.executable = true
+					log.info('Generated batch script at location: {}', destination)
 				}
+			}
+		}
+		project.afterEvaluate {
+			t.dependsOn extension.dependencies
+			t.inputs.properties([jvmFlagEnv: extension.jvmFlagEnv, osPlatforms: extension.osPlatforms])
+			t.inputs.files extension.source ?: []
+			def destinationDir = extension.destinationDir ?: extension.source?.parent
+			if(null != destinationDir) {
+				t.outputs.dir destinationDir
 			}
 		}
 	}
