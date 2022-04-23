@@ -11,9 +11,9 @@ plugins {
 
 swayamJar {
     source = file('${sourceFile}') // Mandatory
-    destination = file('${destFile}') // Optional, default is source file's parent directory.
+    destinationDir = file('${destDir}') // Optional, default is source file's parent directory.
     osPlatforms = ['nix', 'WINDOWS'] // Optional, default is build environment OS platform
-    flagEnv = 'EXAMPLE_JVM_FLAGS' // Optional, default is SWAYAMJAR_JVM_FLAGS
+    jvmFlagEnv = 'EXAMPLE_JVM_FLAGS' // Optional, default is SWAYAMJAR_JVM_FLAGS
 }
 ```
 
