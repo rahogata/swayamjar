@@ -1,3 +1,5 @@
+[![Build Status](https://app.travis-ci.com/rahogata/swayamjar.svg?branch=main)](https://app.travis-ci.com/rahogata/swayamjar)
+
 # swayamjar
 
 A Gradle plugin to create a self executable file with fat jar. This is my first Gradle plugin written with less experience.
@@ -17,6 +19,11 @@ swayamJar {
     jvmFlagEnv = 'EXAMPLE_JVM_FLAGS' // Optional, default is SWAYAMJAR_JVM_FLAGS
 }
 ```
+
+### System Requirements
+
+1. JDK 8
+2. Gradle >=5.6.4
 
 ### Plugin Configuration
 
