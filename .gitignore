@@ -21,3 +21,6 @@ bin
 
 # Groovy project
 .groovy
+
+# Intellij IDEA
+.idea/

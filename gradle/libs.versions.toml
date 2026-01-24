@@ -1,0 +1,6 @@
+[plugins]
+gradle-publish = {id = "com.gradle.plugin-publish", version = "2.0.0"}
+kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version = "1.9.25" }
+
+[libraries]
+junitBom = "org.junit:junit-bom:5.14.2"
