@@ -53,6 +53,6 @@ jobs:
           G_P_S: ${{ secrets.G_P_S }}
         run: |
           ./gradlew publishPlugins \
-            -Pgradle.publish.key=G_P_K \
-            -Pgradle.publish.secret=G_P_S \
+            -Pgradle.publish.key=$G_P_K \
+            -Pgradle.publish.secret=$G_P_S \
             --no-daemon
