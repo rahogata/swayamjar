@@ -1,26 +1,25 @@
 language: java
 install: true
-
-jdk: openjdk8
-
+jdk: openjdk17
 before_cache:
-  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
-  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
-
+- rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+- rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 cache:
   directories:
-    - $HOME/.gradle/caches/
-    - $HOME/.gradle/wrapper/
-
+  - "$HOME/.gradle/caches/"
+  - "$HOME/.gradle/wrapper/"
 stages:
 - build
 - publish
-
 jobs:
   include:
   - stage: build
     if: branch IS present AND tag IS blank
-    script: ./gradlew --no-daemon build
+    script: "./gradlew --no-daemon build"
   - stage: publish
     if: tag IS present
-    script: ./gradlew --no-daemon -Pgradle.publish.key=$G_P_K -Pgradle.publish.secret=$G_P_S publishPlugins
+    script: "./gradlew --no-daemon -Pgradle.publish.key=$G_P_K -Pgradle.publish.secret=$G_P_S publishPlugins"
+env:
+  global:
+  - secure: cRXyA9Y4+uwItU2gsDuSgQw+FNtA9x/8pSVHI4AKDD+AoDlTu9lzinDs+bsfCx7FzoCCF2a/2K5ycp6fhosmjsPFt+ERqc1BiUibMIKhRKWrQqmZ9PIIEFWjIPVCmF8eJbzVa4eZju8vwCgXP/fddrD2Y+WhO1G1ClYuH92hV3WagildSytDniikTLssx9giK1mS4+N5WuMT5hr6RRi57p0q/xlAGnwC/Gnoj9DWMqZhOkcQlYkzOgChdfBFqlKtEXXd3plkMf14xvVA+6Q6uK5HxEzq/WhiaRwGmHvwv6m0VoxUWTR6hl/k5BHhW4MMV2fNrqQFThVOgf+jkzdL2OF7UOmxnVtN3R87LssUxSoZ9Ilbq0y1vYYWJz55qwinn+NQPRV7rUnoygGl3tgr+GhdoA/oGc7Gk6t4TI1J6oLlP3ePnBXRkqTLGdvslVmsvuLtVlY0IavSr0e0IweXo449ySCE9nHD5jEK3TQg+3UQo1SBeq9SilkSY5gad+px0k8Y/ogvmUrHx7WxsdqkdbD90zGzX3wMnpO0DBNTGNYsdYEoYOgvTRmoZSbpCNHUuWq4FUGG/YFOEJUHPgVpkv2NQab1Qgpam9C1JpOJhvw1PaTwa+h8OB8O7WvngKdLDVKtOnXP839bacDCXnrdKlU3YZIJRs8ttEIRaX4ZsB8=
+  - secure: wF17pZGA+F7zMuXHTQACYjL1XgUICvaah0AEtL8JbqEvrfP03x7oZVMajook+JoHs+GyptH0MnNDkyNVim25oHqTTNkESKgOqnr2bVvUCB5U29KhWJ6dEap+YCesXh4M3tltujsd2OpBVYnTFSNARXKp7p/gV+uHzc5vbROAXa9QsvvRU1Gvk29uDYifp0hIHoQI6St6HWfT0c2QfMnomyMx0uaXJXjY7NumAI8ci2wfPMLWnEEKUvmG3u+vQWxgdWzK/x4/elyLBLijhabbxSmuRz0ezd4/ASRFSyyKTBt5dgclmzVu+p4cF2nXsJVF6/LDC463pOz1qw1R+TNbZox7guceZuuyRbQKGe/+UR5uGPF5ecAHtEv5uAYCl2cATf/N2DcYbJsX6Xo2u7rB0kXkbXGJ8X1+53qUPBhE6csExhKu3qF00nlmQCnIG8GaEhhwkbK9onSxJmYPmyV9W9In73rXUsP7PupLHLnPRWyiXrRxVaQggNlrYKKOT5peMaOtWwDxtuvqnhTLEhw8q00Vg5KImiCxBK2phn16mxmy15TuiisouH6DiC7KpvsuHdjWrrcngXuB2YiOHLoaWRg2wxJhnAsPCcj/cvoY7AShPrLlqwmBlIqeJs/4YhhjEvcgesEjfEpHUexWqhmMuLrSDoE/XnCcUSTZL5jpGvs=
